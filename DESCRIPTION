@@ -1,0 +1,13 @@
+Package: translikert
+Title: This Function Transforms a Questionnaire Dataframe into a Format Compatible with `HH::likert()` for Likert-type Plots.
+Version: 0.0.0.9000
+Authors@R: 
+    person("Claire", "Chen", , "yi-chen.chen@columbia.edu", role = c("aut", "cre"))
+Description: This Function Transforms a Questionnaire Dataframe into a Format Compatible with `HH::likert()` for Likert-type Plots.
+License: MIT LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+  dplyr,
+  tidyr
