@@ -29,8 +29,6 @@ transform_for_likert <- function(data, question_cols, na_action = "omit",
     pivot_longer(cols = all_of(question_cols),
                  names_to = "Question",
                  values_to = "Response")
-  cat("Checkpoint 1:")
-  print(long_data)
 
   # Handle missing values
   if (na_action == "omit") {
@@ -44,14 +42,10 @@ transform_for_likert <- function(data, question_cols, na_action = "omit",
     long_data <- long_data |>
       mutate(Response = fct_explicit_na(Response, na_level = na_category))
   }
-  cat("Checkpoint 2:")
-  print(long_data)
 
   long_data <- long_data |>
     mutate(Response = factor(Response, levels = response_levels_in_order))
 
-  cat("Checkpoint 3:")
-  print(long_data)
 
   # Group by question and response, then summarize to get counts
   summarized_data <- long_data |>
@@ -61,15 +55,12 @@ transform_for_likert <- function(data, question_cols, na_action = "omit",
     mutate(Percentage = Count / sum(Count) * 100) |>
     dplyr::select(Question, Response, Percentage)
 
-  cat("Checkpoint 4:")
-  print(summarized_data)
 
   # Pivot wider to get the data into the required format for HH::likert
   final_data <- summarized_data |>
     pivot_wider(names_from = Response, values_from = Percentage, values_fill = 0)
 
   cat("Checkpoint final (pre-rename):")
-  print(final_data)
 
   return(final_data)
 }
