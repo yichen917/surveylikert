@@ -1,4 +1,4 @@
-Package: translikert
+Package: surveylikert
 Title: This Function Transforms a Questionnaire Dataframe into a Format Compatible with `HH::likert()` for Likert-type Plots.
 Version: 0.0.0.9000
 Authors@R: 
@@ -10,4 +10,5 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
   dplyr,
-  tidyr
+  tidyr,
+  HH
