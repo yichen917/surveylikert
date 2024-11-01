@@ -52,12 +52,12 @@ prepare_likert_data <- function(data, question_cols, na_action = "omit",
   unique_responses <- data |>
     dplyr::select(all_of(question_cols)) |>
     pivot_longer(cols = everything(), values_drop_na = (na_action == "omit")) |>
-    pull(value) |>
-    unique()
+    distinct(value) |>          # Get distinct responses only
+    pull(value)                 # Pull values in their original type
 
   # Add na_category to unique responses if na_action = "as_category" and na_category is not NULL
   if (na_action == "as_category" && !is.null(na_category)) {
-    unique_responses <- unique(c(unique_responses, na_category))
+    unique_responses <- c(as.character(unique_responses), na_category)
     unique_responses <- unique_responses[!is.na(unique_responses)]
   }
 
