@@ -31,8 +31,8 @@ plot_likert <- function(data, question_cols, response_levels_in_order, na_action
 
   library(HH)
 
-  # Transform the data using transform_for_likert()
-  transformed_data <- transform_for_likert(
+  # Transform the data using prepare_likert_data()
+  transformed_data <- prepare_likert_data(
     data = data,
     question_cols = question_cols,
     na_action = na_action,
