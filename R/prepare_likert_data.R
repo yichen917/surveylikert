@@ -17,12 +17,12 @@
 #' @examples
 #' # Example usage:
 #' # data <- your_dataframe
-#' # result <- transform_for_likert(data, question_cols = c("Q1", "Q2"), na_action = "as_category",
+#' # result <- prepare_likert_data(data, question_cols = c("Q1", "Q2"), na_action = "as_category",
 #' #                                response_levels_in_order = c("Strongly disagree", "Disagree", "No response",
 #' #                                                             "Agree", "Strongly agree"),
 #' #                                na_category = "No response")
 #' @export
-transform_for_likert <- function(data, question_cols, na_action = "omit",
+prepare_likert_data <- function(data, question_cols, na_action = "omit",
                                       response_levels_in_order, na_category = NULL) {
 
   library(dplyr)
