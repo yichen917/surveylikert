@@ -29,6 +29,8 @@ plot_likert <- function(data, question_cols, response_levels_in_order, na_action
                         na_category = NULL, main = "Likert Plot of Responses", xlab = "Percentage",
                         ylab = NULL, positive.order = TRUE) {
 
+  library(HH)
+
   # Transform the data using transform_for_likert()
   transformed_data <- transform_for_likert(
     data = data,

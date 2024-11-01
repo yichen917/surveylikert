@@ -25,6 +25,10 @@
 transform_for_likert <- function(data, question_cols, na_action = "omit",
                                       response_levels_in_order, na_category = NULL) {
 
+  library(dplyr)
+  library(tidyr)
+  library(tidyverse)
+
   ## Error handling
 
   # Check if response_levels_in_order is provided, otherwise, stop execution
