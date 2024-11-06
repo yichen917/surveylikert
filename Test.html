@@ -67,16 +67,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="Test_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Test_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Test_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="Test_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
-
-<script src="Test_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-
-<link href="Test_files/libs/parallel-coordinates-2.1.8/parcoords.css" rel="stylesheet">
-
-<script src="Test_files/libs/parcoords-binding-1.0.1/parcoords.js"></script>
-
-<script src="Test_files/libs/d3-5.16.0/d3.min.js"></script>
-
 
 
 </head>
@@ -87,27 +77,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">test</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<p><strong>Background</strong>:</p>
+<p>The <code>HH::likert()</code> function provides a robust way to generate Likert-scale plots, but it requires the input dataframe to be in a specific format: survey or questionnaire questions must be organized as rows, and responses should be in columns. This format differs from the typical structure of survey data, where questions are represented by columns and individual responses occupy each row. As a result, users often need to transform their data using mutations like <code>pivot_longer</code> or <code>pivot_wider</code> before plotting, which can be time-consuming, particularly for those new to R.</p>
+<p>To simplify this process, I developed this <code>surveylikert</code> package. It automates the transformation of survey data to the required format for <code>HH::likert()</code> and allows users to create Likert plots directly from raw survey data, without manual reshaping.</p>
+<p><strong>Description</strong>:</p>
+<p>Please refer to DESCRIPTION file in the repository</p>
+<p><strong>Examples</strong>:</p>
+<p>Below are some examples for this package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github("yichen917/surveylikert", force = TRUE)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
@@ -120,61 +104,298 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parcoords)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fivethirtyeight)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>pulitzer_data <span class="ot">&lt;-</span> pulitzer</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmltools)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Data preparation</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>pulitzer_data <span class="ot">&lt;-</span> pulitzer</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a title and the parallel coordinates plot in a single HTML output</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>htmltools<span class="sc">::</span><span class="fu">browsable</span>(</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tagList</span>(</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    tags<span class="sc">$</span><span class="fu">h2</span>(<span class="st">"Parallel Coordinates Plot of Pulitzer Data"</span>),</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">parcoords</span>(</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      pulitzer_data,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">rownames =</span> F,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">brushMode =</span> <span class="st">"1D-axes"</span>,  </span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">reorderable =</span> T, </span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">queue =</span> T,</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">withD3 =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">autoresize =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> <span class="fu">list</span>(<span class="at">left =</span> <span class="dv">120</span>, <span class="at">right =</span> <span class="dv">30</span>, <span class="at">top =</span> <span class="dv">13</span>, <span class="at">down =</span> <span class="dv">0</span>)</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<h2 class="anchored">Parallel Coordinates Plot of Pulitzer Data</h2>
-<div class="parcoords html-widget html-fill-item" height="338px" id="htmlwidget-74e8d45590559f6cb8a7" style="width:100%;height:338px; position:relative; overflow-x:auto; overflow-y:hidden; max-width:100%;" width="100%"></div>
-<script type="application/json" data-for="htmlwidget-74e8d45590559f6cb8a7">{"x":{"data":{"names":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],"newspaper":["USA Today","Wall Street Journal","New York Times","Los Angeles Times","Washington Post","New York Daily News","New York Post","Chicago Tribune","San Jose Mercury News","Newsday","Houston Chronicle","Dallas Morning News","San Francisco Chronicle","Arizona Republic","Chicago Sun-Times","Boston Globe","Atlanta Journal Constitution","Newark Star Ledger","Detroit Free Press","Minneapolis Star Tribune","Philadelphia Inquirer","Cleveland Plain Dealer","San Diego Union-Tribune","Tampa Bay Times","Denver Post","Rocky Mountain News","Oregonian","Miami Herald","Orange County Register","Sacramento Bee","St. Louis Post-Dispatch","Baltimore Sun","Kansas City Star","Detroit News","Orlando Sentinel","South Florida Sun-Sentinel","New Orleans Times-Picayune","Columbus Dispatch","Indianapolis Star","San Antonio Express-News","Pittsburgh Post-Gazette","Milwaukee Journal Sentinel","Tampa Tribune","Fort Woth Star-Telegram","Boston Herald","Seattle Times","Charlotte Observer","Daily Oklahoman","Louisville Courier-Journal","Investor's Buisiness Daily"],"circ2004":[2192098,2101017,1119027,983727,760034,712671,642844,603315,558874,553117,549300,528379,499008,466926,453757,446241,409873,395000,379304,377058,376454,367528,355771,348502,340168,340007,339169,325032,310001,303841,281198,277947,275747,271465,269269,268297,262008,259127,253778,246057,242514,241605,238877,237318,236899,233497,231369,223403,216934,215735],"circ2013":[1674306,2378827,1865318,653868,474767,516165,500521,414930,583998,377744,360251,409265,218987,293640,470548,245572,231094,340778,209652,301345,306831,311605,250678,340260,416676,0,228909,147130,356165,200802,167199,177054,189283,115643,161070,163728,0,137148,156850,139005,180433,198469,191477,188593,95929,229764,137829,124667,131208,157161],"pctchg_circ":[-24,13,67,-34,-38,-28,-22,-31,4,-32,-34,-23,-56,-37,4,-45,-44,-14,-45,-20,-18,-15,-30,-2,22,-100,-33,-55,15,-34,-41,-36,-31,-57,-40,-39,-100,-47,-38,-44,-26,-18,-20,-21,-60,-2,-40,-44,-40,-27],"num_finals1990_2003":[1,30,55,44,52,4,0,23,4,12,2,11,7,5,1,25,1,2,7,4,24,4,0,10,1,4,9,17,3,4,4,11,2,4,5,0,5,1,1,0,3,2,0,1,0,11,1,0,0,0],"num_finals2004_2014":[1,20,62,41,48,2,0,15,2,6,3,6,2,2,1,16,5,6,5,4,8,7,2,11,8,1,8,7,2,4,3,2,0,0,2,1,3,0,0,0,0,8,0,0,0,5,3,0,3,1],"num_finals1990_2014":[2,50,117,85,100,6,0,38,6,18,5,17,9,7,2,41,6,8,12,8,32,11,2,21,9,5,17,24,5,8,7,13,2,4,7,1,8,1,1,0,3,10,0,1,0,16,4,0,3,1]},"options":{"rownames":false,"brushMode":"1D-axes","brushPredicate":"AND","reorderable":true,"margin":{"top":13,"bottom":50,"left":120,"right":30,"down":0},"mode":"queue","bundlingStrength":0.5,"smoothness":0},"autoresize":true,"tasks":null},"evals":[],"jsHooks":[]}</script>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fivethirtyeight)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(surveylikert)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<section id="parallel-coordinates-plot-of-pulitzer-data" class="level2">
-<h2 class="anchored" data-anchor-id="parallel-coordinates-plot-of-pulitzer-data">Parallel Coordinates Plot of Pulitzer Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Render the parallel coordinates plot</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parcoords</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  pulitzer_data,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">rownames =</span> F,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">brushMode =</span> <span class="st">"1D-axes"</span>,  </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">reorderable =</span> T, </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">queue =</span> T,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">withD3 =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">autoresize =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">margin =</span> <span class="fu">list</span>(<span class="at">left =</span> <span class="dv">120</span>, <span class="at">right =</span> <span class="dv">30</span>, <span class="at">top =</span> <span class="dv">13</span>, <span class="at">down =</span> <span class="dv">0</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'psych'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:ggplot2':
+
+    %+%, alpha</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the bfi dataset</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"bfi"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bfi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      A1 A2 A3 A4 A5 C1 C2 C3 C4 C5 E1 E2 E3 E4 E5 N1 N2 N3 N4 N5 O1 O2 O3 O4
+61617  2  4  3  4  4  2  3  3  4  4  3  3  3  4  4  3  4  2  2  3  3  6  3  4
+61618  2  4  5  2  5  5  4  4  3  4  1  1  6  4  3  3  3  3  5  5  4  2  4  3
+61620  5  4  5  4  4  4  5  4  2  5  2  4  4  4  5  4  5  4  2  3  4  2  5  5
+61621  4  4  6  5  5  4  4  3  5  5  5  3  4  4  4  2  5  2  4  1  3  3  4  3
+61622  2  3  3  4  5  4  4  5  3  2  2  2  5  4  5  2  3  4  4  3  3  3  4  3
+61623  6  6  5  6  5  6  6  6  1  3  2  1  6  5  6  3  5  2  2  3  4  3  5  6
+      O5 gender education age
+61617  3      1        NA  16
+61618  3      2        NA  18
+61620  2      2        NA  17
+61621  5      2        NA  17
+61622  3      1        NA  17
+61623  1      2         3  21</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare_likert_data</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>trans_bfi <span class="ot">&lt;-</span> <span class="fu">prepare_likert_data</span>(bfi,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">question_cols =</span> <span class="fu">c</span>(<span class="st">'A1'</span>, <span class="st">'A2'</span>, <span class="st">'A3'</span>, <span class="st">'A4'</span>, <span class="st">'A5'</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">na_action =</span> <span class="st">'omit'</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">response_levels_in_order =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>trans_bfi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+# Groups:   Question [5]
+  Question   `1`   `2`   `3`   `4`   `5`   `6`
+  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 A1       33.1  29.4  14.4   12.1  8.01  2.95
+2 A2        1.69  4.54  5.45  19.9 36.9  31.5 
+3 A3        3.24  6.20  7.46  20.3 35.5  27.2 
+4 A4        4.64  7.73  6.65  16.2 23.5  41.2 
+5 A5        2.12  6.68  9.12  22.2 34.9  25.0 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check NAs</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(bfi))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       A1        A2        A3        A4        A5        C1        C2        C3 
+       16        27        26        19        16        21        24        20 
+       C4        C5        E1        E2        E3        E4        E5        N1 
+       26        16        23        16        25         9        21        22 
+       N2        N3        N4        N5        O1        O2        O3        O4 
+       21        11        36        29        22         0        28        14 
+       O5    gender education       age 
+       20         0       223         0 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create likert plot directly from survey/questionnaire data</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_likert</span>(bfi, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">c</span>(<span class="st">'A1'</span>, <span class="st">'A2'</span>, <span class="st">'A3'</span>, <span class="st">'A4'</span>, <span class="st">'A5'</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">na_action =</span> <span class="st">'as_category'</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">response_levels_in_order =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">na_category =</span> <span class="dv">7</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main =</span> <span class="st">"Likert Plot"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">positive.order =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: grid</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: latticeExtra</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'latticeExtra'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ggplot2':
+
+    layer</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: multcomp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: mvtnorm</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: survival</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: TH.data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: MASS</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'TH.data'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:MASS':
+
+    geyser</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: gridExtra</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'gridExtra'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    combine</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'HH'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:psych':
+
+    logit</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:lubridate':
+
+    interval</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    transpose</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:base':
+
+    is.R</code></pre>
+</div>
 <div class="cell-output-display">
-<div class="parcoords html-widget html-fill-item" height="464px" id="htmlwidget-8105f96d1b8271141e10" style="width:100%;height:464px; position:relative; overflow-x:auto; overflow-y:hidden; max-width:100%;" width="100%"></div>
-<script type="application/json" data-for="htmlwidget-8105f96d1b8271141e10">{"x":{"data":{"names":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],"newspaper":["USA Today","Wall Street Journal","New York Times","Los Angeles Times","Washington Post","New York Daily News","New York Post","Chicago Tribune","San Jose Mercury News","Newsday","Houston Chronicle","Dallas Morning News","San Francisco Chronicle","Arizona Republic","Chicago Sun-Times","Boston Globe","Atlanta Journal Constitution","Newark Star Ledger","Detroit Free Press","Minneapolis Star Tribune","Philadelphia Inquirer","Cleveland Plain Dealer","San Diego Union-Tribune","Tampa Bay Times","Denver Post","Rocky Mountain News","Oregonian","Miami Herald","Orange County Register","Sacramento Bee","St. Louis Post-Dispatch","Baltimore Sun","Kansas City Star","Detroit News","Orlando Sentinel","South Florida Sun-Sentinel","New Orleans Times-Picayune","Columbus Dispatch","Indianapolis Star","San Antonio Express-News","Pittsburgh Post-Gazette","Milwaukee Journal Sentinel","Tampa Tribune","Fort Woth Star-Telegram","Boston Herald","Seattle Times","Charlotte Observer","Daily Oklahoman","Louisville Courier-Journal","Investor's Buisiness Daily"],"circ2004":[2192098,2101017,1119027,983727,760034,712671,642844,603315,558874,553117,549300,528379,499008,466926,453757,446241,409873,395000,379304,377058,376454,367528,355771,348502,340168,340007,339169,325032,310001,303841,281198,277947,275747,271465,269269,268297,262008,259127,253778,246057,242514,241605,238877,237318,236899,233497,231369,223403,216934,215735],"circ2013":[1674306,2378827,1865318,653868,474767,516165,500521,414930,583998,377744,360251,409265,218987,293640,470548,245572,231094,340778,209652,301345,306831,311605,250678,340260,416676,0,228909,147130,356165,200802,167199,177054,189283,115643,161070,163728,0,137148,156850,139005,180433,198469,191477,188593,95929,229764,137829,124667,131208,157161],"pctchg_circ":[-24,13,67,-34,-38,-28,-22,-31,4,-32,-34,-23,-56,-37,4,-45,-44,-14,-45,-20,-18,-15,-30,-2,22,-100,-33,-55,15,-34,-41,-36,-31,-57,-40,-39,-100,-47,-38,-44,-26,-18,-20,-21,-60,-2,-40,-44,-40,-27],"num_finals1990_2003":[1,30,55,44,52,4,0,23,4,12,2,11,7,5,1,25,1,2,7,4,24,4,0,10,1,4,9,17,3,4,4,11,2,4,5,0,5,1,1,0,3,2,0,1,0,11,1,0,0,0],"num_finals2004_2014":[1,20,62,41,48,2,0,15,2,6,3,6,2,2,1,16,5,6,5,4,8,7,2,11,8,1,8,7,2,4,3,2,0,0,2,1,3,0,0,0,0,8,0,0,0,5,3,0,3,1],"num_finals1990_2014":[2,50,117,85,100,6,0,38,6,18,5,17,9,7,2,41,6,8,12,8,32,11,2,21,9,5,17,24,5,8,7,13,2,4,7,1,8,1,1,0,3,10,0,1,0,16,4,0,3,1]},"options":{"rownames":false,"brushMode":"1D-axes","brushPredicate":"AND","reorderable":true,"margin":{"top":13,"bottom":50,"left":120,"right":30,"down":0},"mode":"queue","bundlingStrength":0.5,"smoothness":0},"autoresize":true,"tasks":null},"evals":[],"jsHooks":[]}</script>
+<div>
+<figure class="figure">
+<p><img src="Test_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-</section>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot likert data directly with survey/questionnair data</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_likert</span>(bfi, </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">c</span>(<span class="st">'A1'</span>, <span class="st">'A2'</span>, <span class="st">'A3'</span>, <span class="st">'A4'</span>, <span class="st">'A5'</span>),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">na_action =</span> <span class="st">'omit'</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">response_levels_in_order =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">main =</span> <span class="st">"Likert Plot"</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">positive.order =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Test_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(likert)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: xtable</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'likert':
+  method      from
+  plot.likert HH  </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'likert'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:HH':
+
+    likert</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    recode</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"pisaitems"</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>pisa_data <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(pisaitems)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>pisa_data <span class="ot">&lt;-</span> pisa_data[, <span class="fu">c</span>(<span class="fu">grep</span>(<span class="st">"^ST24Q"</span>, <span class="fu">names</span>(pisa_data), <span class="at">value =</span> <span class="cn">TRUE</span>))]</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pisa_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 11
+  ST24Q01        ST24Q02 ST24Q03 ST24Q04 ST24Q05 ST24Q06 ST24Q07 ST24Q08 ST24Q09
+  &lt;fct&gt;          &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;  
+1 Disagree       Strong… Strong… Strong… Strong… Strong… Agree   Disagr… Strong…
+2 Agree          Strong… Strong… Strong… Strong… Agree   Strong… Agree   Strong…
+3 Strongly agree Strong… Strong… Agree   Strong… Strong… Strong… Agree   Disagr…
+4 Disagree       Disagr… Agree   Strong… Disagr… Disagr… Agree   Strong… Strong…
+5 Strongly disa… Disagr… Strong… Disagr… Strong… Disagr… Disagr… Agree   Agree  
+6 Agree          Strong… Strong… Agree   Strong… Agree   Strong… Agree   Strong…
+# ℹ 2 more variables: ST24Q10 &lt;fct&gt;, ST24Q11 &lt;fct&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare_likert_data</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>transform_data <span class="ot">&lt;-</span> <span class="fu">prepare_likert_data</span>(pisa_data, </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                   <span class="fu">colnames</span>(pisa_data), </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">response_levels_in_order =</span> <span class="fu">c</span>(<span class="st">"Strongly disagree"</span>, <span class="st">"Disagree"</span>, <span class="st">"No response"</span>, <span class="st">"Agree"</span>, <span class="st">"Strongly agree"</span>),</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">na_action =</span> <span class="st">"as_category"</span>, </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">na_category =</span> <span class="st">"No response"</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(transform_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+# Groups:   Question [6]
+  Question `Strongly disagree` Disagree `No response` Agree `Strongly agree`
+  &lt;chr&gt;                  &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;            &lt;dbl&gt;
+1 ST24Q01                 22.4     35.3          1.80  30.0            10.5 
+2 ST24Q02                 20.0     35.7          1.70  31.4            11.2 
+3 ST24Q03                 20.8     33.1          1.91  35.3             8.87
+4 ST24Q04                 24.5     39.7          1.81  26.0             7.99
+5 ST24Q05                 18.9     27.1          1.82  39.4            12.7 
+6 ST24Q06                 41.4     39.9          1.95  10.8             6.02</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create likert plot using transformed data in HH::likert()</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>HH<span class="sc">::</span><span class="fu">likert</span>(Question<span class="sc">~</span>., transform_data, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">main =</span> <span class="st">"PISA Item 24: Reading Attitudes"</span>,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab =</span> <span class="st">"Percent"</span>, <span class="at">ylab =</span> <span class="st">""</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">scales =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">list</span>(<span class="at">cex =</span> <span class="dv">1</span>),</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> <span class="fu">list</span>(<span class="at">cex =</span> <span class="dv">1</span>)),</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">positive.order =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Test_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot likert data directly with plot_likert()</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_likert</span>(pisa_data, </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">colnames</span>(pisa_data),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">na_action =</span> <span class="st">'as_category'</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">response_levels_in_order =</span> <span class="fu">c</span>(<span class="st">"Strongly disagree"</span>, <span class="st">"Disagree"</span>, <span class="st">"Neutral"</span>, <span class="st">"Agree"</span>, <span class="st">"Strongly agree"</span>),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">na_category =</span> <span class="st">"Neutral"</span>,</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main =</span> <span class="st">"PISA Item 24: Reading Attitudes"</span>,</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">positive.order =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Test_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 </main>
 <!-- /main column -->
