@@ -2,6 +2,31 @@
 toc-title: Table of contents
 ---
 
+**Background**:
+
+The `HH::likert()` function provides a robust way to generate
+Likert-scale plots, but it requires the input dataframe to be in a
+specific format: survey or questionnaire questions must be organized as
+rows, and responses should be in columns. This format differs from the
+typical structure of survey data, where questions are represented by
+columns and individual responses occupy each row. As a result, users
+often need to transform their data using mutations like `pivot_longer`
+or `pivot_wider` before plotting, which can be time-consuming,
+particularly for those new to R.
+
+To simplify this process, I developed this `surveylikert` package. It
+automates the transformation of survey data to the required format for
+`HH::likert()` and allows users to create Likert plots directly from raw
+survey data, without manual reshaping.
+
+**Description**:
+
+Please refer to DESCRIPTION file in the repository
+
+**Examples**:
+
+Below are some examples for this package.
+
 ::: cell
 ``` {.r .cell-code}
 # install.packages("devtools")
