@@ -10,7 +10,7 @@ Please refer to DESCRIPTION file in the repository
 
 **Examples**: 
 
-Below are some examples for this package.
+Below are some examples for this package. 
 
 ```{r}
 # install.packages("devtools")
