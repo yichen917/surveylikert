@@ -22,7 +22,11 @@ survey data, without manual reshaping.
 
 ### **Description**:
 
-Please refer to DESCRIPTION file in the repository
+Please refer to DESCRIPTION file in the repository. There are two functions in this package.
+
+`prepare_likert_data()` transforms a questionnaire dataframe (questions in columns and responses in rows) into a format compatible with `HH::likert()` for likert-type plots. 
+
+`plot_likert()` allows likert-type plots directly using survey/questionnaire data, incorporating dataframe transformation and `HH:likert()`.
 
 ### **Examples**:
 
