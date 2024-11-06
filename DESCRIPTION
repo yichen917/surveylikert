@@ -3,7 +3,7 @@ Title: Package for survey/questionnaire likert data transformation and plot.
 Version: 0.0.0.9000
 Authors@R: 
     person("Claire", "Chen", , "yi-chen.chen@columbia.edu", role = c("aut", "cre"))
-Description: This package provides two functions. "prepare_likert_data" transforms a questionnaire dataframe (questions in columns and responses in rows) into a format compatible with `HH::likert()` for likert-type plots. "plot_likert" allows likert-type plots directly using survey/questionnaire data, incorporating dataframe transformation and "HH:likert()". 
+Description: This package provides two functions. `prepare_likert_data()` transforms a questionnaire dataframe (questions in columns and responses in rows) into a format compatible with `HH::likert()` for likert-type plots. `plot_likert()` allows likert-type plots directly using survey/questionnaire data, incorporating dataframe transformation and `HH:likert()`. 
 License: MIT LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

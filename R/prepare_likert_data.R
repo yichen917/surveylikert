@@ -88,7 +88,7 @@ prepare_likert_data <- function(data, question_cols, na_action = "omit",
     }
     # Replace NA with na_category label in Response
     long_data <- long_data |>
-      mutate(Response = fct_explicit_na(Response, na_level = as.character(na_category)))
+      mutate(Response = fct_na_value_to_level(Response, na_level = as.character(na_category)))
   }
 
   # Convert Response column to a factor with the specified levels in response_levels_in_order
