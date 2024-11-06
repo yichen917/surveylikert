@@ -3,7 +3,7 @@
 Packagae `surveylikert`: Background, Description, and Examples
 
 
-**Background**:
+### **Background**:
 
 The `HH::likert()` function provides a robust way to generate
 Likert-scale plots, but it requires the input dataframe to be in a
@@ -20,11 +20,11 @@ automates the transformation of survey data to the required format for
 `HH::likert()` and allows users to create Likert plots directly from raw
 survey data, without manual reshaping.
 
-**Description**:
+### **Description**:
 
 Please refer to DESCRIPTION file in the repository
 
-**Examples**:
+### **Examples**:
 
 Below are some examples for this package. Please run the Test.qmd file locally to see the dataframes output since it could not be displayed neatly in this file.
 
