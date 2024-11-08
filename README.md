@@ -1,6 +1,6 @@
 ## Intuitive Likert Data Transformation and Direct Plot Tool
 
-Packagae `surveylikert`: Background, Description, and Examples
+Self-designed Packagae `surveylikert`: Background, Description, and Examples
 
 
 ### **Background**:
